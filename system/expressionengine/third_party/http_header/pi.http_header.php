@@ -2,20 +2,23 @@
 
 $plugin_info = array(
 	'pi_name' => 'HTTP Header',
-	'pi_version' => '1.0.0',
+	'pi_version' => '1.0.1',
 	'pi_author' => 'Rob Sanchez',
 	'pi_author_url' => 'http://github.com/rsanchez',
 	'pi_description' => 'Set the HTTP Headers for your template.',
 	'pi_usage' => Http_header::usage()
 );
 
+/**
+ * @property CI_Controller $EE
+ */
 class Http_header
 {
 	public $return_data = '';
 
 	public function Http_header()
 	{
-		$this->EE = get_instance();
+		$this->EE =& get_instance();
 		
 		foreach ($this->EE->TMPL->tagparams as $key => $value)
 		{
@@ -29,6 +32,11 @@ class Http_header
 		
 		if ($this->EE->TMPL->fetch_param('terminate') === 'yes')
 		{
+			foreach ($this->EE->output->headers as $header)
+			{
+				@header($header[0], $header[1]);
+			}
+			
 			exit;
 		}
 		
@@ -96,7 +104,7 @@ Set the HTTP Headers for your template.
 ## Examples
 
 Do a 301 redirect
-	{exp:http_header status="302" location="{path=site/something}" terminate="yes"}
+	{exp:http_header status="301" location="{path=site/something}" terminate="yes"}
 
 Set a 404 Status header
 	{exp:http_header status="404"}

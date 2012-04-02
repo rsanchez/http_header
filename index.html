@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>HTTP Header by rsanchez</title>
+    
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>HTTP Header</h1>
+        <p>Set the HTTP Headers for your ExpressionEngine templates.</p>
+        <p class="view"><a href="https://github.com/rsanchez/http_header">View the Project on GitHub <small>rsanchez/http_header</small></a></p>
+        <ul>
+          <li><a href="https://github.com/rsanchez/http_header/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/rsanchez/http_header/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/rsanchez/http_header">Fork On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h2>Parameters</h2>
+
+<ul>
+<li>status - input an HTTP Status code</li>
+<li>location - set a location for redirection</li>
+<li>content_type - set a Content-Type header</li>
+<li>terminate - set to "yes" to prevent any other output from the template</li>
+</ul><h2>Examples</h2>
+
+<p>Do a 301 redirect</p>
+
+<pre><code>{exp:http_header status="302" location="{path=site/something}" terminate="yes"}
+</code></pre>
+
+<p>Set a 404 Status header</p>
+
+<pre><code>{exp:http_header status="404"}
+</code></pre>
+
+<p>Set the Content-Type header to application/json</p>
+
+<pre><code>{exp:http_header content_type="application/json"}
+</code></pre>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/rsanchez">rsanchez</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+  </body>
+</html>

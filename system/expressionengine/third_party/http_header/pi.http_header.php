@@ -38,7 +38,7 @@ Set the Content-Type header to application/json
  * @author Rob Sanchez
  * @link https://github.com/rsanchez/http_header
  * @version 1.0.2
- * 
+ *
  * @property CI_Controller $EE
  */
 class Http_header
@@ -50,7 +50,7 @@ class Http_header
 
 	/**
 	 * constructor and plugin renderer
-	 * 
+	 *
 	 * @return string
 	 */
 	public function Http_header()
@@ -72,6 +72,11 @@ class Http_header
 		if ($this->EE->TMPL->fetch_param('content_type') !== FALSE)
 		{
 			$this->set_content_type($this->EE->TMPL->fetch_param('content_type'), $this->EE->TMPL->fetch_param('charset'));
+		}
+		// Added by @pvledoux
+		if ($this->EE->TMPL->fetch_param('content_disposition') !== FALSE)
+		{
+			$this->set_content_disposition($this->EE->TMPL->fetch_param('content_disposition'), $this->EE->TMPL->fetch_param('filename'));
 		}
 		else
 		{
@@ -95,33 +100,33 @@ class Http_header
 			{
 				@header($header[0], $header[1]);
 			}
-			
+
 			exit;
 		}
 
 		//this tricks the output class into NOT sending its own headers
 		$this->EE->TMPL->template_type = 'cp_asset';
-		
+
 		return $this->return_data = $this->EE->TMPL->tagdata;
 	}
-	
+
 	/**
 	 * set the http status code
-	 * 
+	 *
 	 * @param int $code ex. 404
-	 * 
+	 *
 	 * @return void
 	 */
 	protected function set_status($code)
 	{
 		$this->EE->output->set_status_header($code);
 	}
-	
+
 	/**
 	 * set the Location header
-	 * 
+	 *
 	 * @param string $location full url or template/template string
-	 * 
+	 *
 	 * @return void
 	 */
 	protected function set_location($location)
@@ -130,27 +135,27 @@ class Http_header
 		{
 			$location = str_replace('{site_url}', $this->EE->functions->fetch_site_index(1), $location);
 		}
-		
+
 		if (strpos($location, LD.'path=') !== FALSE)
 		{
 			$location = preg_replace_callback('/'.LD.'path=[\042\047]?(.*?)[\042\047]?'.RD.'/', array($this->EE->functions, 'create_url'), $location);
 		}
-		
+
 		//it's not a proper url, so it's a template/template string, make it a proper url
 		if ( ! preg_match('#^/|[a-z]+://#', $location))
 		{
 			$location = $this->EE->functions->create_url($location);
 		}
-		
+
 		$this->EE->output->set_header('Location: '.$location);
 	}
-	
+
 	/**
 	 * set the Content-Type header
-	 * 
+	 *
 	 * @param string $content_type ex. "text/html", "application/json"
 	 * @param string $charset ex. "utf-8", "iso-8859-1" (optional)
-	 * 
+	 *
 	 * @return void
 	 */
 	protected function set_content_type($content_type, $charset = '')
@@ -163,7 +168,27 @@ class Http_header
 
 		$this->EE->output->set_header('Content-Type: '.$content_type);
 	}
+
+	/**
+	 * set the Content-Disposition header
+	 *
+	 * @author Pv Ledoux (@pvledoux)
+	 * @param string $content_disposition ex. "attachment"
+	 * @param string $filename (optional)
+	 *
+	 * @return void
+	 */
+	protected function set_content_disposition($content_disposition, $filename = '')
+	{
+		//add a filename if there isn't one already defined in the $content_disposition string
+		if ($filename && strpos($content_disposition, 'filename=') === FALSE)
+		{
+			$content_disposition .= '; filename='.strtolower($filename);
+		}
+
+		$this->EE->output->set_header('Content-Disposition: '.$content_disposition);
+	}
 }
 
-/* End of file pi.http_header.php */ 
-/* Location: ./system/expressionengine/third_party/http_header/pi.http_header.php */ 
+/* End of file pi.http_header.php */
+/* Location: ./system/expressionengine/third_party/http_header/pi.http_header.php */

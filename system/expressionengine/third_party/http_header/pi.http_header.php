@@ -80,17 +80,21 @@ class Http_header
 		}
 		else
 		{
-			//thanks @mistermuckle
-			switch ($this->EE->TMPL->template_type)
+			// Conditional wrapper added by @pashamalla
+			if ($this->EE->TMPL->fetch_param('content_type') === FALSE)
 			{
-				case 'js':
-					$this->set_content_type('text/javascript', $charset);
-					break;
-				case 'css':
-					$this->set_content_type('text/css', $charset);
-					break;
-				default:
-					$this->set_content_type('text/html', $charset);
+				//thanks @mistermuckle
+				switch ($this->EE->TMPL->template_type)
+				{
+					case 'js':
+						$this->set_content_type('text/javascript', $charset);
+						break;
+					case 'css':
+						$this->set_content_type('text/css', $charset);
+						break;
+					default:
+						$this->set_content_type('text/html', $charset);
+				}
 			}
 		}
 

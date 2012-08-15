@@ -19,7 +19,7 @@ Set the HTTP Headers for your template.
 
 Do a 301 redirect
 
-	{exp:http_header status="302" location="{path=site/something}" terminate="yes"}
+	{exp:http_header status="301" location="{path=site/something}" terminate="yes"}
 
 Set a 404 Status header
 
@@ -38,4 +38,3 @@ Test if the last_segment is the url_title and redirect if it is not
 
 For the above redirect, an additional segment (skip_betterworkflow) is needed if you are using better workflow
 {exp:http_header status="307" location="{path={segment_1}/{segment_2}/{url_title}}" terminate="yes" test_a="{segment_3}" test_type="!=" test_b="{url_title}" skip_betterworkflow="yes"}
-

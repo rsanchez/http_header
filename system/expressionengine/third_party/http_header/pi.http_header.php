@@ -27,7 +27,7 @@ Set the HTTP Headers for your template.
 
 Do a 301 redirect
 
-	{exp:http_header status="302" location="{path=site/something}" terminate="yes"}
+	{exp:http_header status="301" location="{path=site/something}" terminate="yes"}
 
 Set a 404 Status header
 

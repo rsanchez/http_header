@@ -15,6 +15,7 @@ Set the HTTP Headers for your template.
 * status - input an HTTP Status code
 * location - set a location for redirection
 * content_type - set a Content-Type header
+* charset - set a charset in the Content-Type header
 * content_disposition - set a Content-Disposition (ex: attachment) with a filename
 * terminate - set to "yes" to prevent any other output from the template
 * test_a - The left side of the test
@@ -40,7 +41,7 @@ Set Content-Disposition to force the download
 
 	{exp:http_header content_disposition="attachment" filename="myfile.xml"}
 	
-Test if the last_segment is the url_title and redirect if it isn\'t
+Test if the last_segment is the url_title and redirect if it is not
 {exp:http_header status="307" location="{path={segment_1}/{segment_2}/{url_title}}" terminate="yes" test_a="{segment_3}" test_type="!=" test_b="{url_title}"}
 
 For the above redirect, an additional segment (skip_betterworkflow) is needed if you are using better workflow
@@ -144,7 +145,7 @@ class Http_header
 
 		if ($this->EE->TMPL->fetch_param('content_type') !== FALSE)
 		{
-			$this->set_content_type($this->EE->TMPL->fetch_param('content_type'), $this->EE->TMPL->fetch_param('charset'));
+			$this->set_content_type($this->EE->TMPL->fetch_param('content_type'), $charset);
 		}
 		// Added by @pvledoux
 		if ($this->EE->TMPL->fetch_param('content_disposition') !== FALSE)

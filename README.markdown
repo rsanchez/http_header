@@ -33,8 +33,8 @@ Set Content-Disposition to force the download
 	{exp:http_header content_disposition="attachment" filename="myfile.xml"}
 	
 Test if the last_segment is the url_title and redirect if it isn't
-{exp:http_header status="301" location="{path={segment_1}/{segment_2}/{url_title}}" terminate="yes" test_a="{segment_3}" test_type="!=" test_b="{url_title}"}
+{exp:http_header status="307" location="{path={segment_1}/{segment_2}/{url_title}}" terminate="yes" test_a="{segment_3}" test_type="!=" test_b="{url_title}"}
 
 For the above redirect, an additional segment (skip_betterworkflow) is needed if you are using better workflow
-{exp:http_header status="301" location="{path={segment_1}/{segment_2}/{url_title}}" terminate="yes" test_a="{segment_3}" test_type="!=" test_b="{url_title}" skip_betterworkflow="yes"}
+{exp:http_header status="307" location="{path={segment_1}/{segment_2}/{url_title}}" terminate="yes" test_a="{segment_3}" test_type="!=" test_b="{url_title}" skip_betterworkflow="yes"}
 

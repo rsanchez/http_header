@@ -2,7 +2,7 @@
 
 $plugin_info = array(
 	'pi_name' => 'HTTP Header',
-	'pi_version' => '1.0.2',
+	'pi_version' => '1.0.3',
 	'pi_author' => 'Rob Sanchez',
 	'pi_author_url' => 'http://github.com/rsanchez',
 	'pi_description' => 'Set the HTTP Headers for your template.',
@@ -16,18 +16,36 @@ Set the HTTP Headers for your template.
 * location - set a location for redirection
 * content_type - set a Content-Type header
 * charset - set a charset in the Content-Type header
+* content_disposition - set a Content-Disposition (ex: attachment) with a filename
 * terminate - set to "yes" to prevent any other output from the template
+* test_a - The left side of the test
+* test_type - The test type (==, !=, <=, <, >, >=).  (The redirect will happen if the test is true.)
+* test_b - The right side of the test
+* skip_betterworkflow - If set to yes, the redirect will not happen when viewing a better workflow draft
 
 ## Examples
 
 Do a 301 redirect
-	{exp:http_header status="301" location="site/foo" terminate="yes"}
+
+	{exp:http_header status="301" location="{path=site/something}" terminate="yes"}
 
 Set a 404 Status header
+
 	{exp:http_header status="404"}
 
 Set the Content-Type header to application/json
-	{exp:http_header content_type="application/json" charset="utf-8"}',
+
+	{exp:http_header content_type="application/json"}
+
+Set Content-Disposition to force the download
+
+	{exp:http_header content_disposition="attachment" filename="myfile.xml"}
+	
+Test if the last_segment is the url_title and redirect if it is not
+{exp:http_header status="307" location="{path={segment_1}/{segment_2}/{url_title}}" terminate="yes" test_a="{segment_3}" test_type="!=" test_b="{url_title}"}
+
+For the above redirect, an additional segment (skip_betterworkflow) is needed if you are using better workflow
+{exp:http_header status="307" location="{path={segment_1}/{segment_2}/{url_title}}" terminate="yes" test_a="{segment_3}" test_type="!=" test_b="{url_title}" skip_betterworkflow="yes"}',
 );
 
 /**
@@ -37,7 +55,7 @@ Set the Content-Type header to application/json
  *
  * @author Rob Sanchez
  * @link https://github.com/rsanchez/http_header
- * @version 1.0.2
+ * @version 1.0.3
  *
  * @property CI_Controller $EE
  */
@@ -57,6 +75,62 @@ class Http_header
 	{
 		$this->EE =& get_instance();
 
+		// Added By @wiseloren
+		// Allows for double sided conditionals to be processed eg (segment_3 != url_title)
+		if ($this->EE->TMPL->fetch_param('test_a') !== FALSE && $this->EE->TMPL->fetch_param('test_type') !== FALSE
+		 && $this->EE->TMPL->fetch_param('test_b') !== FALSE) {
+		 	switch ($this->EE->TMPL->fetch_param('test_type')) {
+		 		// All tests are reversed with a ! since we want to return if the test fails
+		 		case '==':
+		 			if (!($this->EE->TMPL->fetch_param('test_a') == $this->EE->TMPL->fetch_param('test_b'))) {
+		 				$this->EE->TMPL->log_item('Http Header: Test failed. Header was not processed.');
+		 				return '';
+		 			}
+		 		break;
+		 		case '!=':
+		 			if (!($this->EE->TMPL->fetch_param('test_a') != $this->EE->TMPL->fetch_param('test_b'))) {
+		 				$this->EE->TMPL->log_item('Http Header: Test failed. Header was not processed.');
+		 				return '';
+		 			}
+		 		break;
+		 		case '>':
+		 			if (!($this->EE->TMPL->fetch_param('test_a') > $this->EE->TMPL->fetch_param('test_b'))) {
+		 				$this->EE->TMPL->log_item('Http Header: Test failed. Header was not processed.');
+		 				return '';
+		 			}
+		 		break;
+		 		case '>=':
+		 			if (!($this->EE->TMPL->fetch_param('test_a') >= $this->EE->TMPL->fetch_param('test_b'))) {
+		 				$this->EE->TMPL->log_item('Http Header: Test failed. Header was not processed.');
+		 				return '';
+		 			}
+		 		break;
+		 		case '<':
+		 			if (!($this->EE->TMPL->fetch_param('test_a') < $this->EE->TMPL->fetch_param('test_b'))) {
+		 				$this->EE->TMPL->log_item('Http Header: Test failed. Header was not processed.');
+		 				return '';
+		 			}
+		 		break;
+		 		case '<=':
+		 			if (!($this->EE->TMPL->fetch_param('test_a') <= $this->EE->TMPL->fetch_param('test_b'))) {
+		 				$this->EE->TMPL->log_item('Http Header: Test failed. Header was not processed.');
+		 				return '';
+		 			}
+		 		break;
+		 		default :
+					$this->EE->TMPL->log_item('Http Header received an invalid test_type.');
+				break;
+		 	}
+		} 
+		// Added By @wiseloren
+		// Allows to skip for better workflow
+		if ($this->EE->TMPL->fetch_param('skip_betterworkflow') && $this->EE->TMPL->fetch_param('skip_betterworkflow') == 'yes') {
+			if (isset($this->EE->session->cache['ep_better_workflow']['is_draft']) 
+				&& $this->EE->session->cache['ep_better_workflow']['is_draft']) {
+				$this->EE->TMPL->log_item('Http Header: Skipping, this is a better workflow draft.');
+				return '';
+			}
+		}
 		if ($this->EE->TMPL->fetch_param('status') !== FALSE)
 		{
 			$this->set_status($this->EE->TMPL->fetch_param('status'));
@@ -71,7 +145,7 @@ class Http_header
 
 		if ($this->EE->TMPL->fetch_param('content_type') !== FALSE)
 		{
-			$this->set_content_type($this->EE->TMPL->fetch_param('content_type'), $this->EE->TMPL->fetch_param('charset'));
+			$this->set_content_type($this->EE->TMPL->fetch_param('content_type'), $charset);
 		}
 		// Added by @pvledoux
 		if ($this->EE->TMPL->fetch_param('content_disposition') !== FALSE)

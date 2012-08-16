@@ -32,9 +32,3 @@ Set the Content-Type header to application/json
 Set Content-Disposition to force the download
 
 	{exp:http_header content_disposition="attachment" filename="myfile.xml"}
-	
-Test if the last_segment is the url_title and redirect if it is not
-{exp:http_header status="307" location="{path={segment_1}/{segment_2}/{url_title}}" terminate="yes" test_a="{segment_3}" test_type="!=" test_b="{url_title}"}
-
-For the above redirect, an additional segment (skip_betterworkflow) is needed if you are using better workflow
-{exp:http_header status="307" location="{path={segment_1}/{segment_2}/{url_title}}" terminate="yes" test_a="{segment_3}" test_type="!=" test_b="{url_title}" skip_betterworkflow="yes"}

@@ -18,10 +18,6 @@ Set the HTTP Headers for your template.
 * charset - set a charset in the Content-Type header
 * content_disposition - set a Content-Disposition (ex: attachment) with a filename
 * terminate - set to "yes" to prevent any other output from the template
-* test_a - The left side of the test
-* test_type - The test type (==, !=, <=, <, >, >=).  (The redirect will happen if the test is true.)
-* test_b - The right side of the test
-* skip_betterworkflow - If set to yes, the redirect will not happen when viewing a better workflow draft
 
 ## Examples
 

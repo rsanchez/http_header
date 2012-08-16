@@ -2,7 +2,7 @@
 
 $plugin_info = array(
 	'pi_name' => 'HTTP Header',
-	'pi_version' => '1.0.2',
+	'pi_version' => '1.0.3',
 	'pi_author' => 'Rob Sanchez',
 	'pi_author_url' => 'http://github.com/rsanchez',
 	'pi_description' => 'Set the HTTP Headers for your template.',
@@ -16,18 +16,26 @@ Set the HTTP Headers for your template.
 * location - set a location for redirection
 * content_type - set a Content-Type header
 * charset - set a charset in the Content-Type header
+* content_disposition - set a Content-Disposition (ex: attachment) with a filename
 * terminate - set to "yes" to prevent any other output from the template
 
 ## Examples
 
 Do a 301 redirect
-	{exp:http_header status="301" location="site/foo" terminate="yes"}
+
+	{exp:http_header status="301" location="{path=site/something}" terminate="yes"}
 
 Set a 404 Status header
+
 	{exp:http_header status="404"}
 
 Set the Content-Type header to application/json
-	{exp:http_header content_type="application/json" charset="utf-8"}',
+
+	{exp:http_header content_type="application/json"}
+
+Set Content-Disposition to force the download
+
+	{exp:http_header content_disposition="attachment" filename="myfile.xml"}',
 );
 
 /**
@@ -37,7 +45,7 @@ Set the Content-Type header to application/json
  *
  * @author Rob Sanchez
  * @link https://github.com/rsanchez/http_header
- * @version 1.0.2
+ * @version 1.0.3
  *
  * @property CI_Controller $EE
  */
@@ -71,7 +79,7 @@ class Http_header
 
 		if ($this->EE->TMPL->fetch_param('content_type') !== FALSE)
 		{
-			$this->set_content_type($this->EE->TMPL->fetch_param('content_type'), $this->EE->TMPL->fetch_param('charset'));
+			$this->set_content_type($this->EE->TMPL->fetch_param('content_type'), $charset);
 		}
 		// Added by @pvledoux
 		if ($this->EE->TMPL->fetch_param('content_disposition') !== FALSE)

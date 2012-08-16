@@ -7,6 +7,7 @@ Set the HTTP Headers for your template.
 * status - input an HTTP Status code
 * location - set a location for redirection
 * content_type - set a Content-Type header
+* charset - set a charset in the Content-Type header
 * content_disposition - set a Content-Disposition (ex: attachment) with a filename
 * terminate - set to "yes" to prevent any other output from the template
 
@@ -14,7 +15,7 @@ Set the HTTP Headers for your template.
 
 Do a 301 redirect
 
-	{exp:http_header status="302" location="{path=site/something}" terminate="yes"}
+	{exp:http_header status="301" location="{path=site/something}" terminate="yes"}
 
 Set a 404 Status header
 

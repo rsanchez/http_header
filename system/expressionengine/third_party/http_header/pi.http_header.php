@@ -69,62 +69,6 @@ class Http_header
 	{
 		$this->EE =& get_instance();
 
-		// Added By @wiseloren
-		// Allows for double sided conditionals to be processed eg (segment_3 != url_title)
-		if ($this->EE->TMPL->fetch_param('test_a') !== FALSE && $this->EE->TMPL->fetch_param('test_type') !== FALSE
-		 && $this->EE->TMPL->fetch_param('test_b') !== FALSE) {
-		 	switch ($this->EE->TMPL->fetch_param('test_type')) {
-		 		// All tests are reversed with a ! since we want to return if the test fails
-		 		case '==':
-		 			if (!($this->EE->TMPL->fetch_param('test_a') == $this->EE->TMPL->fetch_param('test_b'))) {
-		 				$this->EE->TMPL->log_item('Http Header: Test failed. Header was not processed.');
-		 				return '';
-		 			}
-		 		break;
-		 		case '!=':
-		 			if (!($this->EE->TMPL->fetch_param('test_a') != $this->EE->TMPL->fetch_param('test_b'))) {
-		 				$this->EE->TMPL->log_item('Http Header: Test failed. Header was not processed.');
-		 				return '';
-		 			}
-		 		break;
-		 		case '>':
-		 			if (!($this->EE->TMPL->fetch_param('test_a') > $this->EE->TMPL->fetch_param('test_b'))) {
-		 				$this->EE->TMPL->log_item('Http Header: Test failed. Header was not processed.');
-		 				return '';
-		 			}
-		 		break;
-		 		case '>=':
-		 			if (!($this->EE->TMPL->fetch_param('test_a') >= $this->EE->TMPL->fetch_param('test_b'))) {
-		 				$this->EE->TMPL->log_item('Http Header: Test failed. Header was not processed.');
-		 				return '';
-		 			}
-		 		break;
-		 		case '<':
-		 			if (!($this->EE->TMPL->fetch_param('test_a') < $this->EE->TMPL->fetch_param('test_b'))) {
-		 				$this->EE->TMPL->log_item('Http Header: Test failed. Header was not processed.');
-		 				return '';
-		 			}
-		 		break;
-		 		case '<=':
-		 			if (!($this->EE->TMPL->fetch_param('test_a') <= $this->EE->TMPL->fetch_param('test_b'))) {
-		 				$this->EE->TMPL->log_item('Http Header: Test failed. Header was not processed.');
-		 				return '';
-		 			}
-		 		break;
-		 		default :
-					$this->EE->TMPL->log_item('Http Header received an invalid test_type.');
-				break;
-		 	}
-		} 
-		// Added By @wiseloren
-		// Allows to skip for better workflow
-		if ($this->EE->TMPL->fetch_param('skip_betterworkflow') && $this->EE->TMPL->fetch_param('skip_betterworkflow') == 'yes') {
-			if (isset($this->EE->session->cache['ep_better_workflow']['is_draft']) 
-				&& $this->EE->session->cache['ep_better_workflow']['is_draft']) {
-				$this->EE->TMPL->log_item('Http Header: Skipping, this is a better workflow draft.');
-				return '';
-			}
-		}
 		if ($this->EE->TMPL->fetch_param('status') !== FALSE)
 		{
 			$this->set_status($this->EE->TMPL->fetch_param('status'));

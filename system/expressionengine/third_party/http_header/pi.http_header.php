@@ -35,7 +35,12 @@ Set the Content-Type header to application/json
 
 Set Content-Disposition to force the download
 
-	{exp:http_header content_disposition="attachment" filename="myfile.xml"}',
+	{exp:http_header content_disposition="attachment" filename="myfile.xml"}
+
+Set the Pragma, Cache-control, and Expires headers to set a 5 minute (300 second) cache
+
+	{exp:http_header cache_seconds="300"}',
+
 );
 
 /**
@@ -104,6 +109,12 @@ class Http_header
 						$this->set_content_type('text/html', $charset);
 				}
 			}
+		}
+
+		// Added by @ccorda
+		if ($this->EE->TMPL->fetch_param('cache_seconds') !== FALSE)
+		{
+			$this->set_cache($this->EE->TMPL->fetch_param('cache_seconds'));
 		}
 
 		if ($this->EE->TMPL->fetch_param('terminate') === 'yes')
@@ -200,6 +211,37 @@ class Http_header
 
 		$this->EE->output->set_header('Content-Disposition: '.$content_disposition);
 	}
+
+	/**
+	 * set the various Caching headers
+	 *
+	 * @author Cameron Corda (@ccorda)
+	 * @param int $cache_seconds ex. 300
+	 *
+	 * @return void
+	 */
+	protected function set_cache($cache_seconds)
+	{
+		// nonfirm that we're getting a number
+		if (is_numeric($cache_seconds)) 
+		{
+			// set no-cache if set to 0, otherwise set cache-control
+			if ($cache_seconds == 0) 
+			{
+				$this->EE->output->set_header('Pragma: no-cache');
+				$this->EE->output->set_header('Cache-Control: no-cache');
+			} 
+			else 
+			{
+				$expires = gmdate('D, d M Y H:i:s', time() + $cache_seconds) . ' GMT';
+				$this->EE->output->set_header('Pragma: public');
+				$this->EE->output->set_header('Cache-Control: max-age='.$cache_seconds);
+				$this->EE->output->set_header('Expires: '.$expires);
+			}
+		}
+	}
+
+
 }
 
 /* End of file pi.http_header.php */

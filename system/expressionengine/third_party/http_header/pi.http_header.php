@@ -2,7 +2,7 @@
 
 $plugin_info = array(
 	'pi_name' => 'HTTP Header',
-	'pi_version' => '1.0.3',
+	'pi_version' => '1.0.4',
 	'pi_author' => 'Rob Sanchez',
 	'pi_author_url' => 'http://github.com/rsanchez',
 	'pi_description' => 'Set the HTTP Headers for your template.',

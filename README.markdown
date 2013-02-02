@@ -32,4 +32,4 @@ Set Content-Disposition to force the download
 
 Set the Pragma, Cache-control, and Expires headers to set a 5 minute (300 second) cache
 
-  {exp:http_header cache_seconds="300"}
+	{exp:http_header cache_seconds="300"}

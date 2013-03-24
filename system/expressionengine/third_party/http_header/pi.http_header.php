@@ -94,7 +94,7 @@ class Http_header
 		
 		if ($this->EE->TMPL->fetch_param('content_language') !== FALSE)
 		{
-			$this->set_content_language($this->EE->TMPL->fetch_param('language'));
+			$this->set_content_language($this->EE->TMPL->fetch_param('content_language'));
 		}
 		else
 		{
@@ -249,6 +249,7 @@ class Http_header
 	/**
 	 * set the Content-Language header
 	 *
+	 * @author Maurizio Napoleoni (@mimo84)
 	 * @param string $content_language ex. "en", "en-US"
 	 *
 	 * @return void

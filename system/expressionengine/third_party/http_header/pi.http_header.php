@@ -91,6 +91,11 @@ class Http_header
 		{
 			$this->set_content_disposition($this->EE->TMPL->fetch_param('content_disposition'), $this->EE->TMPL->fetch_param('filename'));
 		}
+		
+		if ($this->EE->TMPL->fetch_param('content_language') !== FALSE)
+		{
+			$this->set_content_language($this->EE->TMPL->fetch_param('language'));
+		}
 		else
 		{
 			// Conditional wrapper added by @pashamalla
@@ -240,8 +245,18 @@ class Http_header
 			}
 		}
 	}
-
-
+	
+	/**
+	 * set the Content-Language header
+	 *
+	 * @param string $content_language ex. "en", "en-US"
+	 *
+	 * @return void
+	 */
+	protected function set_content_language($content_language)
+	{
+		$this->EE->output->set_header('Content-Language: '.$content_language);
+	}
 }
 
 /* End of file pi.http_header.php */

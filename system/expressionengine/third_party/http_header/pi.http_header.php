@@ -2,9 +2,9 @@
 
 $plugin_info = array(
 	'pi_name' => 'HTTP Header',
-	'pi_version' => '1.0.4',
+	'pi_version' => '1.0.5',
 	'pi_author' => 'Rob Sanchez',
-	'pi_author_url' => 'http://github.com/rsanchez',
+	'pi_author_url' => 'https://github.com/rsanchez',
 	'pi_description' => 'Set the HTTP Headers for your template.',
 	'pi_usage' => '# HTTP Header #
 
@@ -50,7 +50,6 @@ Set the Pragma, Cache-control, and Expires headers to set a 5 minute (300 second
  *
  * @author Rob Sanchez
  * @link https://github.com/rsanchez/http_header
- * @version 1.0.3
  *
  * @property CI_Controller $EE
  */
@@ -86,6 +85,22 @@ class Http_header
 		{
 			$this->set_content_type($this->EE->TMPL->fetch_param('content_type'), $charset);
 		}
+		else
+		{
+			//thanks @mistermuckle, @pashamalla
+			switch ($this->EE->TMPL->template_type)
+			{
+				case 'js':
+					$this->set_content_type('text/javascript', $charset);
+					break;
+				case 'css':
+					$this->set_content_type('text/css', $charset);
+					break;
+				default:
+					$this->set_content_type('text/html', $charset);
+			}
+		}
+
 		// Added by @pvledoux
 		if ($this->EE->TMPL->fetch_param('content_disposition') !== FALSE)
 		{
@@ -95,25 +110,6 @@ class Http_header
 		if ($this->EE->TMPL->fetch_param('content_language') !== FALSE)
 		{
 			$this->set_content_language($this->EE->TMPL->fetch_param('content_language'));
-		}
-		else
-		{
-			// Conditional wrapper added by @pashamalla
-			if ($this->EE->TMPL->fetch_param('content_type') === FALSE)
-			{
-				//thanks @mistermuckle
-				switch ($this->EE->TMPL->template_type)
-				{
-					case 'js':
-						$this->set_content_type('text/javascript', $charset);
-						break;
-					case 'css':
-						$this->set_content_type('text/css', $charset);
-						break;
-					default:
-						$this->set_content_type('text/html', $charset);
-				}
-			}
 		}
 
 		// Added by @ccorda

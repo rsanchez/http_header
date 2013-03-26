@@ -33,3 +33,7 @@ Set Content-Disposition to force the download
 Set the Pragma, Cache-control, and Expires headers to set a 5 minute (300 second) cache
 
 	{exp:http_header cache_seconds="300"}
+	
+Set the Content-Language header to "en"
+
+	{exp:http_header content_language="en"}

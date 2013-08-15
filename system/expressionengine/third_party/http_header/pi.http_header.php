@@ -2,7 +2,7 @@
 
 $plugin_info = array(
 	'pi_name' => 'HTTP Header',
-	'pi_version' => '1.0.5',
+	'pi_version' => '1.0.6',
 	'pi_author' => 'Rob Sanchez',
 	'pi_author_url' => 'https://github.com/rsanchez',
 	'pi_description' => 'Set the HTTP Headers for your template.',
@@ -129,7 +129,7 @@ class Http_header
 		}
 
 		//this tricks the output class into NOT sending its own headers
-		$this->EE->TMPL->template_type = 'cp_asset';
+		$this->EE->config->set_item('send_headers', FALSE);
 
 		return $this->return_data = $this->EE->TMPL->tagdata;
 	}

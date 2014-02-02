@@ -2,7 +2,7 @@
 
 $plugin_info = array(
 	'pi_name' => 'HTTP Header',
-	'pi_version' => '1.0.7',
+	'pi_version' => '1.0.8',
 	'pi_author' => 'Rob Sanchez',
 	'pi_author_url' => 'https://github.com/rsanchez',
 	'pi_description' => 'Set the HTTP Headers for your template.',
@@ -18,6 +18,7 @@ Set the HTTP Headers for your template.
 * charset - set a charset in the Content-Type header
 * content_disposition - set a Content-Disposition (ex: attachment) with a filename
 * terminate - set to "yes" to prevent any other output from the template
+* vary - set a Vary header
 
 ## Examples
 
@@ -39,7 +40,11 @@ Set Content-Disposition to force the download
 
 Set the Pragma, Cache-control, and Expires headers to set a 5 minute (300 second) cache
 
-	{exp:http_header cache_seconds="300"}',
+	{exp:http_header cache_seconds="300"}
+
+Set the Vary header to User-Agent
+
+	{exp:http_header vary="User-Agent"}',
 
 );
 
@@ -116,6 +121,11 @@ class Http_header
 		if ($this->EE->TMPL->fetch_param('cache_seconds') !== FALSE)
 		{
 			$this->set_cache($this->EE->TMPL->fetch_param('cache_seconds'));
+		}
+
+		if ($this->EE->TMPL->fetch_param('vary') !== FALSE)
+		{
+			$this->set_vary($this->EE->TMPL->fetch_param('vary'));
 		}
 
 		if ($this->EE->TMPL->fetch_param('terminate') === 'yes')
@@ -254,6 +264,15 @@ class Http_header
 	protected function set_content_language($content_language)
 	{
 		$this->EE->output->set_header('Content-Language: '.$content_language);
+	}
+
+	/**
+	 * Set the Vary header
+	 * @param string $vary ex. "Accept", "User-Agent"
+	 */
+	protected function set_vary($vary)
+	{
+		$this->EE->output->set_header('Vary: '.$vary);
 	}
 }
 

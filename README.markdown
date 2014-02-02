@@ -11,6 +11,7 @@ Set the HTTP Headers for your template.
 * content_disposition - set a Content-Disposition (ex: attachment) with a filename
 * cache seconds - set to a non-zero number to set caching headers; set to 0 to force no-cache
 * terminate - set to "yes" to prevent any other output from the template
+* vary - set a Vary header
 
 ## Examples
 
@@ -37,3 +38,7 @@ Set the Pragma, Cache-control, and Expires headers to set a 5 minute (300 second
 Set the Content-Language header to "en"
 
 	{exp:http_header content_language="en"}
+
+Set the Vary header to User-Agent
+
+	{exp:http_header vary="User-Agent"}

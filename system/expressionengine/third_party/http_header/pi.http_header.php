@@ -128,6 +128,11 @@ class Http_header
 			$this->set_vary($this->EE->TMPL->fetch_param('vary'));
 		}
 
+		if ($this->EE->TMPL->fetch_param('access_control_allow_origin') !== FALSE)
+		{
+			$this->set_access_control_allow_origin($this->EE->TMPL->fetch_param('access_control_allow_origin'));
+		}
+
 		if ($this->EE->TMPL->fetch_param('terminate') === 'yes')
 		{
 			foreach ($this->EE->output->headers as $header)
@@ -273,6 +278,15 @@ class Http_header
 	protected function set_vary($vary)
 	{
 		$this->EE->output->set_header('Vary: '.$vary);
+	}
+
+	/**
+	 * Set the Access-Control-Allow-Origin header
+	 * @param string $header ex. "*"
+	 */
+	protected function set_access_control_allow_origin($header)
+	{
+		$this->EE->output->set_header('Access-Control-Allow-Origin: '.$header);
 	}
 }
 

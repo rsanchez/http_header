@@ -1,17 +1,19 @@
-# HTTP Header #
+# HTTP Header
 
 Set the HTTP Headers for your template.
 
 ## Parameters
 
-* status - input an HTTP Status code
+* status - set an HTTP Status code
 * location - set a location for redirection
 * content_type - set a Content-Type header
 * charset - set a charset in the Content-Type header
-* content_disposition - set a Content-Disposition (ex: attachment) with a filename
-* cache seconds - set to a non-zero number to set caching headers; set to 0 to force no-cache
+* content_disposition - set a Content-Disposition header (ex: attachment) with a filename
+* content_language - set a Content-Language header
+* cache_seconds - set to a non-zero number to set caching headers; set to 0 to force no-cache
 * terminate - set to "yes" to prevent any other output from the template
 * vary - set a Vary header
+* access_control_allow_origin - set a Access-Control-Allow-Origin header
 
 ## Examples
 
@@ -34,11 +36,15 @@ Set Content-Disposition to force the download
 Set the Pragma, Cache-control, and Expires headers to set a 5 minute (300 second) cache
 
 	{exp:http_header cache_seconds="300"}
-	
+
 Set the Content-Language header to "en"
 
 	{exp:http_header content_language="en"}
 
 Set the Vary header to User-Agent
 
-	{exp:http_header vary="User-Agent"}
+    {exp:http_header vary="User-Agent"}
+
+Set the Access-Control-Allow-Origin header to allow all
+
+    {exp:http_header access_control_allow_origin="*"}

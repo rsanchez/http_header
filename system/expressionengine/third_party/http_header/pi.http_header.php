@@ -95,6 +95,11 @@ class Http_header
 			$this->set_access_control_allow_origin($this->EE->TMPL->fetch_param('access_control_allow_origin'));
 		}
 
+        if ($this->EE->TMPL->fetch_param('x_frame_options') !== FALSE)
+        {
+            $this->set_x_frame_options($this->EE->TMPL->fetch_param('x_frame_options'));
+        }
+
 		if ($this->EE->TMPL->fetch_param('terminate') === 'yes')
 		{
 			foreach ($this->EE->output->headers as $header)
@@ -250,6 +255,24 @@ class Http_header
 	{
 		$this->EE->output->set_header('Access-Control-Allow-Origin: '.$header);
 	}
+
+    /**
+     * Set the X-Frame-Options header - prevents page from Clickjacking (control the site being used in iFrame)
+     * @param string $header
+     * ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options
+     * EE ref: http://expressionengine.stackexchange.com/questions/26353/disable-x-frame-options-header-in-channel-form
+     */
+    protected function set_x_frame_options($header)
+    {
+        // Check Values passed
+        if (strtoupper($header) != "DENY"
+            && strtoupper($header) != "SAMEORIGIN"
+            && strtoupper(substr($header,0,10)) != "ALLOW-FROM") {
+            // Default
+            $header = "SAMEORIGIN";
+        }
+        $this->EE->output->set_header('X-Frame-Options: '.$header);
+    }
 }
 
 /* End of file pi.http_header.php */

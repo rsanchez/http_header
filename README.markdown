@@ -14,6 +14,7 @@ Set the HTTP Headers for your template.
 * terminate - set to "yes" to prevent any other output from the template
 * vary - set a Vary header
 * access_control_allow_origin - set a Access-Control-Allow-Origin header
+* x_frame_options - set X-Frame-Options header to protect from clickjacking (control usage in iFrames)
 
 ## Examples
 
@@ -48,3 +49,9 @@ Set the Vary header to User-Agent
 Set the Access-Control-Allow-Origin header to allow all
 
     {exp:http_header access_control_allow_origin="*"}
+
+Set the X-Frame-Options header to a same website origin
+
+    {exp:http_header x_frame_options="SAMEORIGIN"}
+
+Options available for x_frame_options: DENY, SAMEORIGIN or ALLOW-FROM uri (replace uri for valid uri)

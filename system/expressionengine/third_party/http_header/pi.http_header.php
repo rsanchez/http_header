@@ -2,7 +2,7 @@
 
 $plugin_info = array(
 	'pi_name' => 'HTTP Header',
-	'pi_version' => '1.1.0',
+	'pi_version' => '1.1.2',
 	'pi_author' => 'Rob Sanchez',
 	'pi_author_url' => 'https://github.com/rsanchez',
 	'pi_description' => 'Set the HTTP Headers for your template.',
@@ -190,7 +190,7 @@ class Http_header
 		//add a filename if there isn't one already defined in the $content_disposition string
 		if ($filename && strpos($content_disposition, 'filename=') === FALSE)
 		{
-			$content_disposition .= '; filename='.strtolower($filename);
+			$content_disposition .= '; filename='.$filename;
 		}
 
 		$this->EE->output->set_header('Content-Disposition: '.$content_disposition);

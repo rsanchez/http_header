@@ -34,28 +34,26 @@ class Http_header
 	 */
 	public function __construct()
 	{
-		$this->EE =& get_instance();
-
-		if ($this->EE->TMPL->fetch_param('status') !== FALSE)
+		if (ee()->TMPL->fetch_param('status') !== FALSE)
 		{
-			$this->set_status($this->EE->TMPL->fetch_param('status'));
+			$this->set_status(ee()->TMPL->fetch_param('status'));
 		}
 
-		if ($this->EE->TMPL->fetch_param('location') !== FALSE)
+		if (ee()->TMPL->fetch_param('location') !== FALSE)
 		{
-			$this->set_location($this->EE->TMPL->fetch_param('location'));
+			$this->set_location(ee()->TMPL->fetch_param('location'));
 		}
 
-		$charset = $this->EE->TMPL->fetch_param('charset') !== FALSE ? $this->EE->TMPL->fetch_param('charset') : $this->EE->config->item('charset');
+		$charset = ee()->TMPL->fetch_param('charset') !== FALSE ? ee()->TMPL->fetch_param('charset') : ee()->config->item('charset');
 
-		if ($this->EE->TMPL->fetch_param('content_type') !== FALSE)
+		if (ee()->TMPL->fetch_param('content_type') !== FALSE)
 		{
-			$this->set_content_type($this->EE->TMPL->fetch_param('content_type'), $charset);
+			$this->set_content_type(ee()->TMPL->fetch_param('content_type'), $charset);
 		}
 		else
 		{
 			//thanks @mistermuckle, @pashamalla
-			switch ($this->EE->TMPL->template_type)
+			switch (ee()->TMPL->template_type)
 			{
 				case 'js':
 					$this->set_content_type('text/javascript', $charset);
@@ -69,40 +67,40 @@ class Http_header
 		}
 
 		// Added by @pvledoux
-		if ($this->EE->TMPL->fetch_param('content_disposition') !== FALSE)
+		if (ee()->TMPL->fetch_param('content_disposition') !== FALSE)
 		{
-			$this->set_content_disposition($this->EE->TMPL->fetch_param('content_disposition'), $this->EE->TMPL->fetch_param('filename'));
+			$this->set_content_disposition(ee()->TMPL->fetch_param('content_disposition'), ee()->TMPL->fetch_param('filename'));
 		}
 		
-		if ($this->EE->TMPL->fetch_param('content_language') !== FALSE)
+		if (ee()->TMPL->fetch_param('content_language') !== FALSE)
 		{
-			$this->set_content_language($this->EE->TMPL->fetch_param('content_language'));
+			$this->set_content_language(ee()->TMPL->fetch_param('content_language'));
 		}
 
 		// Added by @ccorda
-		if ($this->EE->TMPL->fetch_param('cache_seconds') !== FALSE)
+		if (ee()->TMPL->fetch_param('cache_seconds') !== FALSE)
 		{
-			$this->set_cache($this->EE->TMPL->fetch_param('cache_seconds'));
+			$this->set_cache(ee()->TMPL->fetch_param('cache_seconds'));
 		}
 
-		if ($this->EE->TMPL->fetch_param('vary') !== FALSE)
+		if (ee()->TMPL->fetch_param('vary') !== FALSE)
 		{
-			$this->set_vary($this->EE->TMPL->fetch_param('vary'));
+			$this->set_vary(ee()->TMPL->fetch_param('vary'));
 		}
 
-		if ($this->EE->TMPL->fetch_param('access_control_allow_origin') !== FALSE)
+		if (ee()->TMPL->fetch_param('access_control_allow_origin') !== FALSE)
 		{
-			$this->set_access_control_allow_origin($this->EE->TMPL->fetch_param('access_control_allow_origin'));
+			$this->set_access_control_allow_origin(ee()->TMPL->fetch_param('access_control_allow_origin'));
 		}
 
-		if ($this->EE->TMPL->fetch_param('x_frame_options') !== FALSE)
+		if (ee()->TMPL->fetch_param('x_frame_options') !== FALSE)
 		{
-			$this->set_x_frame_options($this->EE->TMPL->fetch_param('x_frame_options'));
+			$this->set_x_frame_options(ee()->TMPL->fetch_param('x_frame_options'));
 		}
 
-		if ($this->EE->TMPL->fetch_param('terminate') === 'yes')
+		if (ee()->TMPL->fetch_param('terminate') === 'yes')
 		{
-			foreach ($this->EE->output->headers as $header)
+			foreach (ee()->output->headers as $header)
 			{
 				@header($header[0], $header[1]);
 			}
@@ -111,10 +109,10 @@ class Http_header
 		}
 
 		//this tricks the output class into NOT sending its own headers
-		$this->EE->config->set_item('send_headers', FALSE);
-		$this->EE->TMPL->template_type = 'cp_asset';
+		ee()->config->set_item('send_headers', FALSE);
+		ee()->TMPL->template_type = 'cp_asset';
 
-		return $this->return_data = $this->EE->TMPL->tagdata;
+		return $this->return_data = ee()->TMPL->tagdata;
 	}
 
 	/**
@@ -126,7 +124,7 @@ class Http_header
 	 */
 	protected function set_status($code)
 	{
-		$this->EE->output->set_status_header($code);
+		ee()->output->set_status_header($code);
 	}
 
 	/**
@@ -140,21 +138,21 @@ class Http_header
 	{
 		if (strpos($location, '{site_url}') !== FALSE)
 		{
-			$location = str_replace('{site_url}', $this->EE->functions->fetch_site_index(1), $location);
+			$location = str_replace('{site_url}', ee()->functions->fetch_site_index(1), $location);
 		}
 
 		if (strpos($location, LD.'path=') !== FALSE)
 		{
-			$location = preg_replace_callback('/'.LD.'path=[\042\047]?(.*?)[\042\047]?'.RD.'/', array($this->EE->functions, 'create_url'), $location);
+			$location = preg_replace_callback('/'.LD.'path=[\042\047]?(.*?)[\042\047]?'.RD.'/', array(ee()->functions, 'create_url'), $location);
 		}
 
 		//it's not a proper url, so it's a template/template string, make it a proper url
 		if ( ! preg_match('#^/|[a-z]+://#', $location))
 		{
-			$location = $this->EE->functions->create_url($location);
+			$location = ee()->functions->create_url($location);
 		}
 
-		$this->EE->output->set_header('Location: '.$location);
+		ee()->output->set_header('Location: '.$location);
 	}
 
 	/**
@@ -173,7 +171,7 @@ class Http_header
 			$content_type .= '; charset='.strtolower($charset);
 		}
 
-		$this->EE->output->set_header('Content-Type: '.$content_type);
+		ee()->output->set_header('Content-Type: '.$content_type);
 	}
 
 	/**
@@ -193,7 +191,7 @@ class Http_header
 			$content_disposition .= '; filename='.$filename;
 		}
 
-		$this->EE->output->set_header('Content-Disposition: '.$content_disposition);
+		ee()->output->set_header('Content-Disposition: '.$content_disposition);
 	}
 
 	/**
@@ -212,15 +210,15 @@ class Http_header
 			// set no-cache if set to 0, otherwise set cache-control
 			if ($cache_seconds == 0) 
 			{
-				$this->EE->output->set_header('Pragma: no-cache');
-				$this->EE->output->set_header('Cache-Control: no-cache');
+				ee()->output->set_header('Pragma: no-cache');
+				ee()->output->set_header('Cache-Control: no-cache');
 			} 
 			else 
 			{
 				$expires = gmdate('D, d M Y H:i:s', time() + $cache_seconds) . ' GMT';
-				$this->EE->output->set_header('Pragma: public');
-				$this->EE->output->set_header('Cache-Control: max-age='.$cache_seconds);
-				$this->EE->output->set_header('Expires: '.$expires);
+				ee()->output->set_header('Pragma: public');
+				ee()->output->set_header('Cache-Control: max-age='.$cache_seconds);
+				ee()->output->set_header('Expires: '.$expires);
 			}
 		}
 	}
@@ -235,7 +233,7 @@ class Http_header
 	 */
 	protected function set_content_language($content_language)
 	{
-		$this->EE->output->set_header('Content-Language: '.$content_language);
+		ee()->output->set_header('Content-Language: '.$content_language);
 	}
 
 	/**
@@ -244,7 +242,7 @@ class Http_header
 	 */
 	protected function set_vary($vary)
 	{
-		$this->EE->output->set_header('Vary: '.$vary);
+		ee()->output->set_header('Vary: '.$vary);
 	}
 
 	/**
@@ -253,7 +251,7 @@ class Http_header
 	 */
 	protected function set_access_control_allow_origin($header)
 	{
-		$this->EE->output->set_header('Access-Control-Allow-Origin: '.$header);
+		ee()->output->set_header('Access-Control-Allow-Origin: '.$header);
 	}
 
 	/**
@@ -273,7 +271,7 @@ class Http_header
 			$header = 'SAMEORIGIN';
 		}
 
-		$this->EE->output->set_header('X-Frame-Options: '.$header);
+		ee()->output->set_header('X-Frame-Options: '.$header);
 	}
 }
 
